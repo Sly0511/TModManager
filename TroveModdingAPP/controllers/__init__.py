@@ -1,0 +1,1 @@
+from .modslist import ModsListController

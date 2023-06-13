@@ -1,0 +1,6 @@
+flask
+quart
+asyncio
+pymongo
+motor
+beanie
