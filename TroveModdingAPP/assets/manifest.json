@@ -1,11 +1,11 @@
 {
-  "name": "Trove Build Tools",
-  "short_name": "TBT",
+  "name": "Trove Mod Manager",
+  "short_name": "TMM",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0175C2",
-  "description": "A web place for various tools for Trove.",
+  "description": "An application to manage installation of Trove Mods.",
   "orientation": "natural",
   "prefer_related_applications": false,
   "icons": [
