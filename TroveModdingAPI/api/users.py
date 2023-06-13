@@ -3,10 +3,10 @@ from models.user import User
 from aiohttp import ClientSession
 
 
-users_api = Blueprint('users', __name__)
+users_api = Blueprint('users', __name__, subdomain="tmod", url_prefix="/api/user")
 
 
-@users_api.route("/api/user", subdomain="tmod")
+@users_api.route("/")
 async def get_user():
     token = request.args.get("token", None)
     if token is None:
@@ -17,7 +17,7 @@ async def get_user():
     return jsonify(user.json())
 
 
-@users_api.route("/api/user/create", subdomain="tmod", methods=["PUT"])
+@users_api.route("/create", methods=["PUT"])
 async def create_user():
     token = (await request.form).get("token", None)
     if token is None:
