@@ -25,7 +25,32 @@ async def home():
 
 @api.errorhandler(400)
 async def bad_request(e):
-    return jsonify({"error": "Bad request"}), 400
+    return jsonify(
+        {
+            "error": "bad_request",
+            "message": "Your request wasn't properly formatted for this endpoint."
+        }
+    ), 400
+
+
+@api.errorhandler(403)
+async def not_authorized(e):
+    return jsonify(
+        {
+            "error": "not_authorized",
+            "message": "You don't have access to this resource."
+        }
+    ), 403
+
+
+@api.errorhandler(404)
+async def not_found(e):
+    return jsonify(
+        {
+            "error": "not_found",
+            "message": e.description
+        }
+    ), 404
 
 
 if __name__ == "__main__":

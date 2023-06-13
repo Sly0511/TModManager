@@ -6,20 +6,20 @@ from aiohttp import ClientSession
 users_api = Blueprint('users', __name__, subdomain="tmod", url_prefix="/api/user")
 
 
-@users_api.route("/")
+@users_api.route("/get")
 async def get_user():
     token = request.args.get("token", None)
     if token is None:
         return abort(400)
     user = await User.find_one(User.user_token == token, fetch_links=True)
     if user is None:
-        return jsonify({"error": "User not found"}), 404
+        return abort(404, "User not found")
     return jsonify(user.json())
 
 
-@users_api.route("/create", methods=["PUT"])
+@users_api.route("/create", methods=["POST"])
 async def create_user():
-    token = (await request.form).get("token", None)
+    token = request.args.get("token", None)
     if token is None:
         return abort(400)
     async with ClientSession() as session:
