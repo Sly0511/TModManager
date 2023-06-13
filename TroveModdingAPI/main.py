@@ -2,14 +2,11 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from quart import Quart, jsonify
 
-from api import (
-    users_api
-)
+from api import users_api
 from models import User, Profile
 
 api = Quart(__name__)
 api.config["SERVER_NAME"] = "slynx.xyz"
-api.config["DEBUG"] = True
 api.database_client = None
 api.database = None
 
@@ -28,11 +25,11 @@ async def home():
 
 @api.errorhandler(400)
 async def bad_request(e):
-    return jsonify({'error': "Bad request"}), 400
+    return jsonify({"error": "Bad request"}), 400
 
 
 if __name__ == "__main__":
     # Register API modules
     api.register_blueprint(users_api)
     # Run API application
-    api.run("127.0.0.1", port=80)
+    api.run("0.0.0.0", port=18000)
