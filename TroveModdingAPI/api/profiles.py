@@ -1,8 +1,6 @@
-from quart import Blueprint, request, jsonify, abort
+from models.profile import Profile
 from models.user import User
-from models.profile import Profile, Mod
-from aiohttp import ClientSession
-
+from quart import Blueprint, request, jsonify, abort
 
 profiles_api = Blueprint('profiles', __name__, subdomain="tmod", url_prefix="/api/profile")
 
@@ -36,17 +34,41 @@ async def update_profile():
     added = request.args.get("added")
     removed = request.args.get("removed")
     if (
-            token is None or
-            profile_id is None or
-            (not added and not removed)
+        token is None or
+        profile_id is None or
+        (not added and not removed)
     ):
         return abort(400)
-    user = await User.find_one(User.user_token == token, fetch_links=True)
-    if user is None:
-        return abort(404, "User not found")
-    profile = None
-    for user_profile in user.profiles:
-        if user_profile.profile_id == profile_id:
-            profile = user_profile
+    profile = await Profile.find_one(
+        {
+            "owner_token": token,
+            "profile_id": profile_id,
+            "deleted": False
+        }
+    )
     if profile is None:
-        return jsonify()
+        return abort(404, "Profile doesn't exist")
+    # TODO: Handle adding and removing mods from the profile
+
+
+@profiles_api.route("/delete", methods=["DELETE"])
+async def delete_profile():
+    token = request.args.get("token")
+    profile_id = request.args.get("profile_id")
+    if (
+        token is None or
+        profile_id is None
+    ):
+        return abort(400)
+    profile = await Profile.find_one(
+        {
+            "owner_token": token,
+            "profile_id": profile_id,
+            "deleted": False
+        }
+    )
+    if profile is None:
+        return abort(404, "Profile doesn't exist")
+    profile.deleted = True
+    await profile.save()
+    return jsonify({"success": "OK", "message": "The profile was deleted."}), 202
